@@ -1,27 +1,37 @@
-# React + TypeScript + Vite
+# Interactive Shipping Calculator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a single-page React application that provides a **Quick Quote Shipping Calculator** for merchants. It is built using React, TypeScript, Vite, Material UI, React Hook Form, and Zod.
 
-## Project Constitution Principles
+## Process Overview
 
-This project adheres to the [Interactive Shipping Calculator Constitution](.specify/memory/constitution.md).
+The application features a guided 3-step wizard for data entry to calculate shipping quotes:
+1. **Origin**: Enter the shipment origin address.
+2. **Destination**: Enter the shipment destination address.
+3. **Dimensions**: Enter the package dimensions (weight, length, width, height).
 
-### Error Handling Strategy
-- Form validations strictly enforced using React Hook Form + Zod.
-- Every user-facing async state MUST have explicit UI components for idle, loading, success, empty, and error states.
-- **Quick Quote Note**: The mock API will explicitly return readable errors for unserviceable routes (e.g., "Origin zip code not supported") rather than generic HTTP failures.
+A live summary of the entered data persists alongside the active step, updating instantly as the user types. After completing the flow, the application fetches and displays courier options, allowing merchants to compare pricing breakdowns and estimated delivery timelines.
 
-### Bundle-Size & Performance Optimization Strategy
-- Import only necessary sub-modules from Material UI.
-- Use precise type imports to ensure minimal overhead.
-- Components must be small, reusable, and feature-oriented to prevent bundle bloat.
-- **Quick Quote Note**: To optimize for Slow 3G networks, the React components heavily rely on skeleton loading states `LoadingState.tsx` rather than blocking the UI, giving immediate feedback while fetching courier options.
+## Functional Requirements
+
+- **Guided Wizard**: The system provides a 3-step wizard for data entry (Origin, Destination, Dimensions).
+- **Live Summary**: A persistent live summary of entered data is displayed alongside the active step.
+- **Input Validation**: Inputs are validated at each step before allowing the user to proceed.
+- **Courier Comparison**: The system sorts and displays courier options comparing total price and estimated delivery timeline.
+- **Highlighting Options**: The system explicitly highlights the single "Cheapest" and single "Fastest" courier options.
+- **UI States**: Distinct UI states are presented for: initial (data entry), loading (fetching rates), complete/success (options found), empty (no options found), and error (system failure).
+- **International Shipping**: Support for international shipping origins and destinations.
+
+## Non-Functional Requirements & Design Constraints
+
+- **UI/UX**: The application is mobile-first and responsive, built with Material UI. The calculator is fully usable on mobile screens down to 320px width.
+- **State Management & Form Validation**: Forms utilize React Hook Form + Zod for strict validation. Every user-facing async state enforces explicit UI components for idle, loading, success, empty, and error states.
+- **Performance**: High-frequency updates minimize unnecessary rerenders. The Results screen renders rapidly (<200ms) upon receiving rate data, and live summary updates instantly (<50ms).
+- **Bundle Optimization**: The project imports only necessary sub-modules from Material UI, uses precise type imports, and relies on small, reusable components to prevent bundle bloat. Network load is optimized with skeleton loading states rather than blocking the UI.
+- **Error Handling**: The mock API explicitly returns readable errors for unserviceable routes instead of generic HTTP failures.
 
 ## Testing
 
 The project uses [Playwright](https://playwright.dev/) for end-to-end testing. The test suite covers the multi-step quote flow, including success, empty, and error states across desktop and mobile viewports.
-
-### Running Tests
 
 To run the E2E tests:
 
@@ -36,67 +46,11 @@ npm run test:e2e
 npm run test:e2e:ui
 ```
 
-## React Compiler
+## Running the Development Server
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+To start the local Vite development server:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
